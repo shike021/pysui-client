@@ -11,11 +11,14 @@
 ✅ **生产级代码** - 企业级错误处理和日志记录  
 ✅ **友好界面** - 交互式菜单和详细帮助信息  
 
+> 现在额外提供：基于 pysui 的 **gRPC（Beta）客户端**，可选使用 gRPC 与 Full Node 通信，享受类型化与更高性能的数据访问。
+
 ## 📋 **文件结构**
 
 ```
 sui-client/
-├── sui_client.py              # 核心客户端类
+├── sui_client.py              # 核心客户端类 (JSON-RPC)
+├── sui_grpc_client.py         # gRPC 客户端类 (Beta)
 ├── quick_start.py            # 交互式菜单程序
 ├── test_client.py           # 基础功能测试
 ├── usage_example.py         # 使用示例
@@ -243,6 +246,40 @@ from pysui.sui.sui_txn.sync_transaction import SuiTransaction
 txn = SuiTransaction(client=self.client, initial_sender=self.active_address)
 ```
 
+## 🛰️ **gRPC（Beta）客户端**
+
+为满足更高性能与实时性的场景，本项目新增 `sui_grpc_client.py`，使用 pysui 的 gRPC 能力与 Full Node 通信。
+
+- 类名：`SuiGrpcClient`
+- 方法：与 `SuiContractClient` 基本对齐（余额、部署、调用、对象、交易）
+- 目的：方便你在 JSON-RPC 与 gRPC 之间切换或并行验证
+
+### 前置条件
+- `pip install -r requirements.txt`（包含 `pysui>=0.88.0` 与 `grpcio`）
+- Full Node 启用 gRPC 索引：在 `fullnode.yaml` 中设置：
+  ```
+  rpc:
+    enable-indexing: true
+  ```
+- 若与 JSON-RPC 分离部署，可在特定节点关闭 JSON-RPC：
+  ```
+  enable-index-processing: false
+  ```
+
+### 快速体验
+```bash
+python sui_grpc_client.py
+```
+或在示例中：
+```bash
+python usage_example.py
+```
+将自动尝试初始化 gRPC 客户端并进行余额查询（不可用时会给出指引）。
+
+### 注意事项
+- gRPC 当前为 Beta，接口与能力可能随节点与 SDK 演进而变更。
+- 若出现无法构造 gRPC 客户端或健康检查失败，按报错提示检查 pysui 版本与 Full Node 配置。
+
 ## 🎯 **测试验证**
 
 ### **功能测试结果**
@@ -256,18 +293,6 @@ txn = SuiTransaction(client=self.client, initial_sender=self.active_address)
 | 合约调用     | ✅ 成功 | 所有函数调用正常           |
 | 对象查询     | ✅ 成功 | 获取详细信息成功           |
 | 交易查询     | ✅ 成功 | 获取交易详细信息           |
-
-### **成功案例**
-
-最近的成功部署：
-- **Package ID**: `0xdd7e410845f1a3a4adfbafe30c4b52d93c603336a3b94e149df950f065c28729`
-- **部署Transaction**: `B1QzJYk9mrKwvP2tUeQtfZxCf3e5PsXdEvNxJVcuAijY`
-- **Gas消耗**: ~0.014 SUI
-
-成功的合约调用：
-- **create_greeting**: `9gE5QqA2EWEk9LDWcHg1RqwjvDEUdZ1wwWrKpTWM1WT3`
-- **create_counter**: `C8Uudhc9jY2vzQTaqSNuqMtkuf3iyoz5Tji77vbs6PwJ`
-- **increment_counter**: `2Bcbfswwta5ki2zEH7THy5A7veGaFfnjmm6mpqp2JdyL`
 
 ## 🔍 **故障排除**
 
@@ -321,4 +346,4 @@ logging.basicConfig(level=logging.DEBUG)
 
 ---
 
-**🎯 项目目标完成**: 创建了一个完全基于JSON-RPC的生产级Sui智能合约客户端，支持合约部署、调用和所有基础区块链操作。 
+**🎯 项目目标完成**: 创建了一个完全基于JSON-RPC的生产级Sui智能合约客户端，并新增了可选的 gRPC（Beta）客户端以满足更高性能的数据访问需求。 
