@@ -1,0 +1,7 @@
+# Pysui Client Dependencies
+# Core dependency for Sui blockchain interaction
+pysui>=0.88.0
+
+# Optional dependencies that might be useful
+# requests>=2.28.0  # If you need additional HTTP functionality
+# python-dotenv>=0.19.0  # For environment variable management

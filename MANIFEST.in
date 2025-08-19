@@ -1,0 +1,18 @@
+# Include important documentation
+include README.md
+include LICENSE
+include requirements.txt
+
+# Include example contract
+recursive-include example_contract *.toml *.move
+
+# Include Python scripts
+include *.py
+
+# Exclude cache and compiled files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude *.orig
+global-exclude *.rej
+global-exclude *.swp
+global-exclude .DS_Store
